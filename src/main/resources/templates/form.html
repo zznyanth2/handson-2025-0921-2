@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Todo Form</title>
+</head>
+<body>
+<h1 th:text="${todo.id} != null ? 'Edit Todo' : 'New Todo'"></h1>
+<form th:action="@{/save}" th:object="${todo}" method="post">
+    <input type="hidden" th:field="*{id}" />
+    <div>
+        <label>Title</label>
+        <input type="text" th:field="*{title}" />
+    </div>
+    <div>
+        <label>Description</label>
+        <textarea th:field="*{description}"></textarea>
+    </div>
+    <div>
+        <label>Status</label>
+        <select th:field="*{status}">
+            <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"></option>
+        </select>
+    </div>
+    <div>
+        <button type="submit">Save</button>
+        <a th:href="@{/}">Cancel</a>
+    </div>
+    </form>
+</body>
+</html>

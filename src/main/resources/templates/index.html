@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Todo List</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .column { float:left; width:30%; margin-right:3%; }
+        .card { border:1px solid #ccc; padding:8px; margin-bottom:8px; }
+        .clearfix::after { content:""; clear:both; display:table; }
+    </style>
+</head>
+<body>
+<h1>Todo Board</h1>
+<p><a th:href="@{/new}">Create New Todo</a></p>
+<div class="clearfix">
+    <div class="column">
+        <h2>Todo</h2>
+        <div th:each="t : ${todoList}" class="card">
+            <h3 th:text="${t.title}"></h3>
+            <p th:text="${t.description}"></p>
+            <p>
+                <a th:href="@{/edit/{id}(id=${t.id})}">Edit</a> |
+                <form th:action="@{/delete/{id}(id=${t.id})}" method="post" style="display:inline">
+                    <button type="submit">Delete</button>
+                </form>
+            </p>
+        </div>
+    </div>
+    <div class="column">
+        <h2>Doing</h2>
+        <div th:each="t : ${doingList}" class="card">
+            <h3 th:text="${t.title}"></h3>
+            <p th:text="${t.description}"></p>
+            <p>
+                <a th:href="@{/edit/{id}(id=${t.id})}">Edit</a> |
+                <form th:action="@{/delete/{id}(id=${t.id})}" method="post" style="display:inline">
+                    <button type="submit">Delete</button>
+                </form>
+            </p>
+        </div>
+    </div>
+    <div class="column">
+        <h2>Completed</h2>
+        <div th:each="t : ${completedList}" class="card">
+            <h3 th:text="${t.title}"></h3>
+            <p th:text="${t.description}"></p>
+            <p>
+                <a th:href="@{/edit/{id}(id=${t.id})}">Edit</a> |
+                <form th:action="@{/delete/{id}(id=${t.id})}" method="post" style="display:inline">
+                    <button type="submit">Delete</button>
+                </form>
+            </p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
