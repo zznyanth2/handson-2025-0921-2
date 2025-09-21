@@ -5,6 +5,8 @@ import com.example.todo.model.Todo;
 import com.example.todo.service.TodoService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +50,15 @@ public class TodoController {
         return ResponseEntity.created(URI.create("/api/todos/" + created.getId())).body(created);
     }
 
+    // Handle HTML form submissions (application/x-www-form-urlencoded)
+    @PostMapping(value = "/api/todos", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public String createFromForm(Todo todo, RedirectAttributes attrs) {
+        // service.create will populate id/ timestamps
+        service.create(todo);
+        // redirect back to main page
+        return "redirect:/";
+    }
+
     @GetMapping("/api/todos/{id}")
     @ResponseBody
     public ResponseEntity<?> get(@PathVariable UUID id) {
@@ -64,6 +75,13 @@ public class TodoController {
     @ResponseBody
     public ResponseEntity<?> updateStatus(@PathVariable UUID id, @RequestBody StatusWrapper wrapper) {
         return service.updateStatus(id, wrapper.getStatus()).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    // Handle form submission to update status (from Thymeleaf form)
+    @PostMapping(value = "/api/todos/{id}/status", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public String updateStatusFromForm(@PathVariable UUID id, @RequestParam("status") Status status) {
+        service.updateStatus(id, status);
+        return "redirect:/";
     }
 
     @DeleteMapping("/api/todos/{id}")

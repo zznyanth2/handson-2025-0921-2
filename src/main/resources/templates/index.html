@@ -3,41 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>ToDo App</title>
-    <script src="/static/js/dnd.js"></script>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <script th:src="@{/js/dnd.js}"></script>
     <style>
-        .column { float:left; width:32%; padding:8px; border:1px solid #ccc; min-height:200px; }
-        .todo { padding:6px; margin:4px; background:#f6f6f6; border:1px solid #ddd; cursor:grab; }
+        .column { float:left; width:32%; padding:8px; border:1px solid #ccc; min-height:200px; box-sizing:border-box; }
+        .column h3 { margin-top:0 }
+        .todo { padding:10px; margin:8px 0; background:#f6f6f6; border:1px solid #ddd; cursor:grab; border-radius:4px; }
+        .todo.dragging { opacity:0.6; }
+        .column.drag-over { background:#f0f8ff; }
         .clearfix::after { content: ""; clear: both; display: table; }
+        .meta { color:#666; font-size:0.9em }
     </style>
 </head>
 <body>
 <h1>ToDo</h1>
 <div>
-    <form th:action="@{/api/todos}" method="post" id="createForm">
-        <input type="text" name="title" placeholder="Title" required />
+    <form th:action="@{/api/todos}" method="post" th:object="${newTodo}" id="createForm">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <input th:field="*{title}" placeholder="Title" required />
         <button type="submit">Create</button>
     </form>
 </div>
 <div class="clearfix">
-    <div class="column" id="col-todo">
+    <div class="column" id="col-todo" aria-label="TODO column">
         <h3>TODO</h3>
-        <div th:each="t : ${todosTodo}" class="todo" th:id="${t.id}" draggable="true"> 
+        <div th:each="t : ${todosTodo}" class="todo" th:id="${t.id}" th:attr="data-id=${t.id}" draggable="true" role="listitem"> 
             <strong th:text="${t.title}"></strong><br/>
-            <small th:text="${t.description}"></small>
+            <div class="meta" th:text="${t.description}"></div>
         </div>
     </div>
-    <div class="column" id="col-doing">
+    <div class="column" id="col-doing" aria-label="DOING column">
         <h3>DOING</h3>
-        <div th:each="t : ${todosDoing}" class="todo" th:id="${t.id}" draggable="true"> 
+        <div th:each="t : ${todosDoing}" class="todo" th:id="${t.id}" th:attr="data-id=${t.id}" draggable="true" role="listitem"> 
             <strong th:text="${t.title}"></strong><br/>
-            <small th:text="${t.description}"></small>
+            <div class="meta" th:text="${t.description}"></div>
         </div>
     </div>
-    <div class="column" id="col-completed">
+    <div class="column" id="col-completed" aria-label="COMPLETED column">
         <h3>COMPLETED</h3>
-        <div th:each="t : ${todosCompleted}" class="todo" th:id="${t.id}" draggable="true"> 
+        <div th:each="t : ${todosCompleted}" class="todo" th:id="${t.id}" th:attr="data-id=${t.id}" draggable="true" role="listitem"> 
             <strong th:text="${t.title}"></strong><br/>
-            <small th:text="${t.description}"></small>
+            <div class="meta" th:text="${t.description}"></div>
         </div>
     </div>
 </div>
